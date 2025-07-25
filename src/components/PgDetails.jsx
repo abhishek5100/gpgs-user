@@ -169,48 +169,102 @@ const PgDetails = () => {
   if (loading) return <p className="text-center text-orange-200 mt-10 text-4xl">Loading...</p>;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 font-sans">
+    <div className="min-h-screen bg-gray-100 p-4 font-sans">
       <div className="sticky top-0 z-50 bg-gray-100 pb-4">
         <div className="relative flex items-center justify-center mb-4">
-          <div className="absolute top-2 left-0 w-[300px]">
+          <div className="absolute top-2 left-0 w-[250px]">
             <img src="https://gpgs.in/wp-content/themes/paying_guest/images/logo.png" alt="Logo" />
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-center items-center gap-4 mb-4">
-          {activeFilters.length > 0 && (
-            <button
-              onClick={clearFilters}
-              className="border border-orange-600 text-orange-600 px-6 py-2 rounded-lg hover:bg-orange-50"
-            >
-              Clear Filters
-            </button>
-          )}
-        </div>
+      
 
         {showContent && (
-          <div className="flex flex-wrap justify-center gap-3">
-            {filterButtons.map((btn) => (
-              <div
-                key={btn.id}
-                className="relative"
-                onMouseEnter={() => setPopup(btn.id)}
-                onMouseLeave={() => setPopup(null)}
+       <div className="grid grid-cols-2 sm:flex sm:flex-wrap justify-center gap-4">
+  {filterButtons.map((btn) => {
+    let selectedOptions = [];
+
+    if (btn.id === "gender" && genderFilter) {
+      selectedOptions = [genderFilter];
+    } else if (btn.id === "location") {
+      selectedOptions = activeFilters.filter(
+        (label) => FILTER_FIELDS[label]?.key === "Location"
+      );
+    } else if (btn.id === "ac") {
+      selectedOptions = activeFilters.filter(
+        (label) => FILTER_FIELDS[label]?.key === "Ac / Non AC"
+      );
+    } else if (btn.id === "sharing") {
+      selectedOptions = activeFilters.filter(
+        (label) => FILTER_FIELDS[label]?.key === "Sharing Type"
+      );
+    } else if (btn.id === "bathroom") {
+      selectedOptions = activeFilters.filter(
+        (label) => FILTER_FIELDS[label]?.key === "Attached Bathroom"
+      );
+    }
+
+    return (
+      <div
+        key={btn.id}
+        className="relative w-full sm:w-auto"
+        onMouseEnter={() => setPopup(btn.id)}
+        onMouseLeave={() => setPopup(null)}
+      >
+        {/* Filter Button */}
+        <button className="flex items-center justify-between w-full sm:justify-center gap-2 px-4 py-2 border border-orange-500 text-orange-600 bg-white rounded-xl hover:bg-orange-50 shadow-sm transition-all">
+          {btn.icon}
+          <span className="font-medium">{btn.label}</span>
+        </button>
+
+        {/* Popup Content */}
+        {popup === btn.id && (
+          <div className="absolute top-8.5 left-0 z-50 bg-white border border-orange-300 shadow-lg rounded-xl p-4 w-64 mt-2">
+            <h2 className="text-sm text-orange-500 font-bold mb-3 capitalize">
+              {btn.label} Filter
+            </h2>
+            {renderPopupContent()}
+          </div>
+        )}
+
+        {/* Filter Pills under Button */}
+        {selectedOptions.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-1 text-xs">
+            {selectedOptions.map((opt) => (
+              <span
+                key={opt}
+                className="bg-orange-100 text-orange-700 px-2 py-1 rounded-full flex items-center gap-1"
               >
-                <button className="flex items-center gap-2 px-4 py-2 border border-orange-500 text-orange-600 bg-white rounded-full hover:bg-orange-50 shadow-sm transition-all">
-                  {btn.icon} <span className="font-medium">{btn.label}</span>
+                {opt}
+                <button
+                  onClick={() => {
+                    if (btn.id === "gender") {
+                      setGenderFilter(null);
+                    } else {
+                      toggleFilter(opt);
+                    }
+                  }}
+                  className="ml-1 font-bold text-xs text-orange-500 hover:text-red-500"
+                >
+                  ×
                 </button>
-                {popup === btn.id && (
-                  <div className="absolute top-full left-0 z-50 bg-white border border-orange-300 shadow-lg rounded-xl p-4 w-60 mt-2">
-                    <h2 className="text-sm text-orange-500 font-bold mb-3 capitalize">
-                      {btn.label} Filter
-                    </h2>
-                    {renderPopupContent()}
-                  </div>
-                )}
-              </div>
+              </span>
             ))}
           </div>
+        )}
+        
+      </div>
+    );
+  })}
+
+  {activeFilters.length > 0 && (
+    <button className="flex items-center justify-between text-red-500 underline">
+          {/* {btn.icon} */}
+          <span className="font-medium text-red-500" onClick={()=>clearFilters()}>Clear Filters</span>
+        </button>
+  )}
+</div>
+
         )}
 
         {filterTotal > 0 && (
@@ -220,38 +274,36 @@ const PgDetails = () => {
         )}
       </div>
 
-      <div className="max-w-full mx-auto">
+      <div className="max-w-full mx-auto mt-4">
         {filteredData.length === 0 ? (
           <p className="text-gray-500 text-center py-10">No records found for selected filters.</p>
         ) : (
-          <div className="bg-white p-6 rounded-2xl shadow-xl mb-8">
-            <div className="overflow-auto max-h-[600px] rounded-xl border border-gray-200">
-              <table className="min-w-full text-sm text-left text-gray-700">
-                <thead className="sticky top-0 bg-orange-300 z-10 shadow-md text-gray-800 text-base">
-                  <tr>
-                    {Object.keys(filteredData[0] || {}).map((key) => (
-                      <th key={key} className="px-4 py-3 border-b border-gray-300 whitespace-nowrap font-semibold">
-                        {key}
-                      </th>
+          <div className="overflow-x-auto max-w-full rounded-xl border border-gray-200">
+            <table className="min-w-[700px] w-full text-sm text-left text-gray-700">
+              <thead className="sticky top-0 bg-orange-300 z-10 shadow-md text-gray-800 text-base">
+                <tr>
+                  {Object.keys(filteredData[0] || {}).map((key) => (
+                    <th key={key} className="px-4 py-3 border-b border-gray-300 whitespace-nowrap font-semibold">
+                      {key}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {filteredData.map((item, index) => (
+                  <tr
+                    key={index}
+                    className="even:bg-orange-50 hover:bg-orange-100 transition-all border-b border-gray-200"
+                  >
+                    {Object.keys(filteredData[0] || {}).map((key, idx) => (
+                      <td key={idx} className="px-4 py-3 text-[15px] align-top whitespace-nowrap">
+                        {item[key]}
+                      </td>
                     ))}
                   </tr>
-                </thead>
-                <tbody>
-                  {filteredData.map((item, index) => (
-                    <tr
-                      key={index}
-                      className="even:bg-orange-50 hover:bg-orange-100 transition-all border-b border-gray-200"
-                    >
-                      {Object.keys(filteredData[0] || {}).map((key, idx) => (
-                        <td key={idx} className="px-4 py-3 text-[15px] align-top whitespace-nowrap">
-                          {item[key]}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
