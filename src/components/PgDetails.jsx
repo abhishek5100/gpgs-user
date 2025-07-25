@@ -38,7 +38,7 @@ const PgDetails = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`http://localhost:3000/google-sheet?sheet=${selectedSheet}`);
+        const res = await axios.get(`https://gpgs-services.vercel.app/google-sheet?sheet=${selectedSheet}`);
         if (res.data.success) {
           setData(res.data.data);
           setShowContent(true);
