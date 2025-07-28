@@ -211,7 +211,7 @@ const PgDetails = () => {
         </div>
 
         {showContent && (
-          <div className="grid grid-cols-2 mt-5 sm:flex sm:flex-wrap justify-end mr-20  gap-2">
+          <div className="grid grid-cols-2 mt-5 sm:flex sm:flex-wrap justify-end mr-10  gap-2">
             {filterButtons.map((btn) => {
               let selectedOptions = [];
               if (btn.id === "gender" && genderFilter) {
@@ -262,7 +262,7 @@ const PgDetails = () => {
 
 
             {activeFilters.length > 0 && (
-              <button className="flex items-center justify-between h-8 sm:justify-center gap-2 px-4 py-1 border border-orange-500 text-orange-600 bg-white rounded-xl hover:bg-orange-50 shadow-sm transition-all">
+              <button className="flex items-center bg-orange-100 justify-between h-8 sm:justify-center gap-2 px-4 py-1 border border-orange-500 text-orange-600  rounded-xl hover:bg-orange-50 shadow-sm transition-all">
                 {/* {btn.icon} */}
                 <span onClick={clearFilters}
                   className="font-medium flex items-center gap-2 ">
