@@ -7,6 +7,8 @@ import {
   FaBath,
   FaHome,
 } from "react-icons/fa";
+import { AiOutlineClear } from "react-icons/ai";
+
 
 const PgDetails = () => {
   const [data, setData] = useState([]);
@@ -209,7 +211,7 @@ const PgDetails = () => {
         </div>
 
         {showContent && (
-          <div className="grid grid-cols-2 mt-5 sm:flex sm:flex-wrap justify-end mr-40  gap-2">
+          <div className="grid grid-cols-2 mt-5 sm:flex sm:flex-wrap justify-end mr-20  gap-2">
             {filterButtons.map((btn) => {
               let selectedOptions = [];
               if (btn.id === "gender" && genderFilter) {
@@ -258,28 +260,34 @@ const PgDetails = () => {
               );
             })}
 
+
             {activeFilters.length > 0 && (
-              <button className="flex items-center justify-between h-8 sm:justify-center gap-2 px-4 py-1 border border-orange-500 text-orange-600 bg-orange-100 rounded-xl hover:bg-orange-50 shadow-sm transition-all">
-                <span
-                  className="font-medium text-red-700"
-                  onClick={clearFilters}
-                >
-                  Clear Filters
+              <button className="flex items-center justify-between h-8 sm:justify-center gap-2 px-4 py-1 border border-orange-500 text-orange-600 bg-white rounded-xl hover:bg-orange-50 shadow-sm transition-all">
+                {/* {btn.icon} */}
+                <span onClick={clearFilters}
+                  className="font-medium flex items-center gap-2 ">
+                  <AiOutlineClear /> Clear Filters
+                  {/* {btn.label} */}
+
+
                 </span>
               </button>
+
             )}
+
+
+
+
 
             <div className="flex items-center justify-end mt-1 mb-2 gap-2">
               <button
                 onClick={() => setSortByVacatingDate((prev) => !prev)}
-                className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all ${
-                  sortByVacatingDate ? "bg-orange-500" : "bg-gray-300"
-                }`}
+                className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all ${sortByVacatingDate ? "bg-orange-500" : "bg-gray-300"
+                  }`}
               >
                 <div
-                  className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
-                    sortByVacatingDate ? "translate-x-6" : "translate-x-0"
-                  }`}
+                  className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${sortByVacatingDate ? "translate-x-6" : "translate-x-0"
+                    }`}
                 />
               </button>
               <label className="text-lg font-medium  text-orange-600">
@@ -313,13 +321,12 @@ const PgDetails = () => {
                     {Object.keys(filteredData[0] || {}).map((key, idx) => (
                       <th
                         key={key}
-                        className={`px-2 py-2 border-b border-gray-300 whitespace-nowrap font-medium ${
-                          idx === 0
+                        className={`px-2 py-2 border-b border-gray-300 whitespace-nowrap font-medium ${idx === 0
                             ? "sticky left-0 z-20 bg-orange-200"
                             : idx === 1
-                            ? "sticky left-[30px] z-20 bg-orange-200 "
-                            : ""
-                        }`}
+                              ? "sticky left-[30px] z-20 bg-orange-200 "
+                              : ""
+                          }`}
                       >
                         {key === "1" ? "Sr.No" : key}
                       </th>
@@ -335,14 +342,13 @@ const PgDetails = () => {
                       {Object.keys(filteredData[0] || {}).map((key, idx) => (
                         <td
                           key={idx}
-                          className={`px-2 py-2 text-[15px] align-top whitespace-nowrap ${
-                            idx === 0
+                          className={`px-2 py-2 text-[15px] align-top whitespace-nowrap ${idx === 0
                               ? "sticky left-0 font-medium bg-orange-200"
                               : idx === 1
-                              ? "sticky left-[30px] font-medium bg-orange-200"
-                              : ""
-                          }`}
-                          // style={{ minWidth: "100px" }}
+                                ? "sticky left-[30px] font-medium bg-orange-200"
+                                : ""
+                            }`}
+                        // style={{ minWidth: "100px" }}
                         >
                           {item[key]}
                         </td>
