@@ -209,7 +209,7 @@ const PgDetails = () => {
         </div>
 
         {showContent && (
-          <div className="grid grid-cols-2 mt-5 sm:flex sm:flex-wrap justify-center gap-2">
+          <div className="grid grid-cols-2 mt-5 sm:flex sm:flex-wrap justify-end mr-40  gap-2">
             {filterButtons.map((btn) => {
               let selectedOptions = [];
               if (btn.id === "gender" && genderFilter) {
