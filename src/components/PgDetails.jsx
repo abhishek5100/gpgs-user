@@ -8,22 +8,6 @@ import {
   FaHome,
 } from "react-icons/fa";
 
-const FILTER_FIELDS = {
-  AC: { key: "Ac / Non AC", value: "AC" },
-  "Non AC": { key: "Ac / Non AC", value: "Non AC" },
-  Private: { key: "Sharing Type", value: "Private" },
-  Double: { key: "Sharing Type", value: "Double" },
-  Triple: { key: "Sharing Type", value: "Triple" },
-  Quad: { key: "Sharing Type", value: "Quad" },
-  "Ghansoli": { key: "Location", value: "Ghansoli" },
-  "CBD Belapur": { key: "Location", value: "CBD Belapur" },
-  "Kopar Khairane": { key: "Location", value: "Kopar Khairane" },
-  "Nerul ( E )": { key: "Location", value: "Nerul ( E )" },
-  "Nerul ( W )": { key: "Location", value: "Nerul ( W )" },
-  "Yes": { key: "Attached Bathroom", value: "yes" },
-  "No": { key: "Attached Bathroom", value: "No" },
-};
-
 const PgDetails = () => {
   const [data, setData] = useState([]);
   const [filterTotal, setFilterTotal] = useState("");
@@ -33,18 +17,35 @@ const PgDetails = () => {
   const [showContent, setShowContent] = useState(false);
   const [popup, setPopup] = useState(null);
   const [sortByVacatingDate, setSortByVacatingDate] = useState(false);
-  const [selectedSheet] = useState("Jul2025");
+
+  const [dynamicFilters, setDynamicFilters] = useState({
+    location: [],
+    ac: [],
+    sharing: [],
+    bathroom: [],
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         const res = await axios.get(
-          `https://gpgs-services.vercel.app/google-sheet?sheet=${selectedSheet}`
+          `https://gpgs-services.vercel.app/google-sheet`
         );
         if (res.data.success) {
-          setData(res.data.data);
+          const raw = res.data.data;
+          setData(raw);
           setShowContent(true);
+
+          const extractUnique = (field) =>
+            [...new Set(raw.map((d) => d[field]).filter(Boolean))];
+
+          setDynamicFilters({
+            location: extractUnique("Location"),
+            ac: extractUnique("Ac / Non AC"),
+            sharing: extractUnique("Sharing Type"),
+            bathroom: extractUnique("Attached Bathroom"),
+          });
         }
       } catch (err) {
         console.error("Failed to load data", err);
@@ -54,7 +55,7 @@ const PgDetails = () => {
     };
 
     fetchData();
-  }, [selectedSheet]);
+  }, []);
 
   const toggleFilter = (label) => {
     setActiveFilters((prev) =>
@@ -66,6 +67,12 @@ const PgDetails = () => {
     setGenderFilter(null);
     setActiveFilters([]);
   };
+
+  const FILTER_FIELDS = {};
+  dynamicFilters.ac.forEach((val) => (FILTER_FIELDS[val] = { key: "Ac / Non AC", value: val }));
+  dynamicFilters.sharing.forEach((val) => (FILTER_FIELDS[val] = { key: "Sharing Type", value: val }));
+  dynamicFilters.location.forEach((val) => (FILTER_FIELDS[val] = { key: "Location", value: val }));
+  dynamicFilters.bathroom.forEach((val) => (FILTER_FIELDS[val] = { key: "Attached Bathroom", value: val }));
 
   const filteredData = data
     .filter((item) => {
@@ -92,19 +99,14 @@ const PgDetails = () => {
     })
     .sort((a, b) => {
       if (!sortByVacatingDate) return 0;
-
       const dateA = new Date(a["Client Vacating Date"]);
       const dateB = new Date(b["Client Vacating Date"]);
-      return dateB - dateA; // descending
+      return dateA - dateB;
     });
 
   useEffect(() => {
     setFilterTotal(filteredData.length);
   }, [filteredData]);
-
-  const uniqueLocations = [
-    ...new Set(data.map((d) => d["Location"]).filter(Boolean)),
-  ];
 
   const renderCheckboxList = (options) => (
     <div className="space-y-2">
@@ -167,13 +169,13 @@ const PgDetails = () => {
           </div>
         );
       case "location":
-        return renderCheckboxList(uniqueLocations);
+        return renderCheckboxList(dynamicFilters.location);
       case "ac":
-        return renderCheckboxList(["AC", "Non AC"]);
+        return renderCheckboxList(dynamicFilters.ac);
       case "sharing":
-        return renderCheckboxList(["Private", "Double", "Triple", "Quad"]);
+        return renderCheckboxList(dynamicFilters.sharing);
       case "bathroom":
-        return renderCheckboxList(["Yes", "No"]);
+        return renderCheckboxList(dynamicFilters.bathroom);
       default:
         return null;
     }
@@ -196,7 +198,7 @@ const PgDetails = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 font-sans">
-      <div className="sticky top-0 z-50 bg-gray-100 pb-4">
+      <div className="sticky top-0 z-50 bg-gray-100">
         <div className="relative flex items-center justify-center mb-4">
           <div className="absolute top-2 left-0 w-[250px]">
             <img
@@ -213,22 +215,9 @@ const PgDetails = () => {
 
               if (btn.id === "gender" && genderFilter) {
                 selectedOptions = [genderFilter];
-              } else if (btn.id === "location") {
+              } else {
                 selectedOptions = activeFilters.filter(
-                  (label) => FILTER_FIELDS[label]?.key === "Location"
-                );
-              } else if (btn.id === "ac") {
-                selectedOptions = activeFilters.filter(
-                  (label) => FILTER_FIELDS[label]?.key === "Ac / Non AC"
-                );
-              } else if (btn.id === "sharing") {
-                selectedOptions = activeFilters.filter(
-                  (label) => FILTER_FIELDS[label]?.key === "Sharing Type"
-                );
-              } else if (btn.id === "bathroom") {
-                selectedOptions = activeFilters.filter(
-                  (label) =>
-                    FILTER_FIELDS[label]?.key === "Attached Bathroom"
+                  (label) => FILTER_FIELDS[label]?.key === btn.label
                 );
               }
 
@@ -281,40 +270,37 @@ const PgDetails = () => {
               );
             })}
 
-
             {activeFilters.length > 0 && (
               <button className="flex items-center justify-between h-8 sm:justify-center gap-2 px-4 py-1 border border-orange-500 text-orange-600 bg-white rounded-xl hover:bg-orange-50 shadow-sm transition-all">
                 <span
                   className="font-medium text-red-500"
-                  onClick={() => clearFilters()}
+                  onClick={clearFilters}
                 >
                   Clear Filters
                 </span>
               </button>
             )}
-                <div className="flex items-center justify-end mt-2 mb-2 gap-2">
-        <label className="text-sm text-orange-600">
-          Sort by CVD
-        </label>
-        <button
-          onClick={() => setSortByVacatingDate((prev) => !prev)}
-          className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all ${
-            sortByVacatingDate ? "bg-orange-500" : "bg-gray-300"
-          }`}
-        >
-          <div
-            className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
-              sortByVacatingDate ? "translate-x-6" : "translate-x-0"
-            }`}
-          />
-        </button>
-      </div>
+
+            <div className="flex items-center justify-end mt-1 mb-2 gap-2">
+              <button
+                onClick={() => setSortByVacatingDate((prev) => !prev)}
+                className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all ${
+                  sortByVacatingDate ? "bg-orange-500" : "bg-gray-300"
+                }`}
+              >
+                <div
+                  className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                    sortByVacatingDate ? "translate-x-6" : "translate-x-0"
+                  }`}
+                />
+              </button>
+              <label className="text-sm  text-orange-600">
+                Sort by CVD
+              </label>
+            </div>
           </div>
         )}
       </div>
-
-      {/* Vacating Date Switch */}
-  
 
       <div className="max-w-full mx-auto mt-4">
         {filteredData.length === 0 ? (
@@ -324,7 +310,7 @@ const PgDetails = () => {
         ) : (
           <>
             {filterTotal > 0 && (
-              <div className="text-end text-sm text-gray-600 mb-1">
+              <div className="text-end text-sm text-gray-600 mr-8 mb-1">
                 Showing{" "}
                 <span className="font-semibold text-orange-600">
                   {filterTotal}
@@ -332,7 +318,6 @@ const PgDetails = () => {
                 result(s)
               </div>
             )}
-
             <div className="overflow-auto max-h-screen rounded-xl border border-gray-200">
               <table className="min-w-[1000px] w-full text-sm text-left text-gray-700">
                 <thead className="sticky top-0 bg-orange-300 z-10 shadow-md text-gray-800 text-base">
@@ -340,18 +325,15 @@ const PgDetails = () => {
                     {Object.keys(filteredData[0] || {}).map((key, idx) => (
                       <th
                         key={key}
-                        className={`px-4 py-3 border-b border-gray-300 whitespace-nowrap font-semibold bg-orange-300 ${
+                        className={`px-2 py-2 border-b border-gray-300 whitespace-nowrap font-medium ${
                           idx === 0
                             ? "sticky left-0 z-20 bg-orange-300"
                             : idx === 1
-                            ? "sticky left-[80px] z-20 bg-orange-300"
+                            ? "sticky left-[30px] z-20 bg-orange-300"
                             : ""
                         }`}
-                        style={{
-                          minWidth: "150px",
-                        }}
                       >
-                        {key === 1 ? "Sr.No." : key}
+                        {key === "1" ? "Sr.No" : key}
                       </th>
                     ))}
                   </tr>
@@ -365,16 +347,14 @@ const PgDetails = () => {
                       {Object.keys(filteredData[0] || {}).map((key, idx) => (
                         <td
                           key={idx}
-                          className={`px-4 py-3 text-[15px] align-top whitespace-nowrap ${
+                          className={`px-2 py-3 text-[15px] align-top whitespace-nowrap ${
                             idx === 0
-                              ? "sticky left-0 bg-orange-50"
+                              ? "sticky left-0 bg-orange-300"
                               : idx === 1
-                              ? "sticky left-[80px] bg-orange-50"
+                              ? "sticky left-[30px] bg-orange-300"
                               : ""
                           }`}
-                          style={{
-                            minWidth: "150px",
-                          }}
+                          // style={{ minWidth: "100px" }}
                         >
                           {item[key]}
                         </td>
