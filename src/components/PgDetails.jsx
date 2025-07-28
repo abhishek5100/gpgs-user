@@ -241,7 +241,7 @@ const PgDetails = () => {
                     </div>
                   )}
 
-                  {selectedOptions.length > 0 && (
+                  {/* {selectedOptions.length > 0 && (
                     <div className="mt-2 flex flex-wrap gap-1 text-xs">
                       {selectedOptions.map((opt) => (
                         <span
@@ -253,15 +253,15 @@ const PgDetails = () => {
                         </span>
                       ))}
                     </div>
-                  )}
+                  )} */}
                 </div>
               );
             })}
 
             {activeFilters.length > 0 && (
-              <button className="flex items-center justify-between h-8 sm:justify-center gap-2 px-4 py-1 border border-orange-500 text-orange-600 bg-white rounded-xl hover:bg-orange-50 shadow-sm transition-all">
+              <button className="flex items-center justify-between h-8 sm:justify-center gap-2 px-4 py-1 border border-orange-500 text-orange-600 bg-orange-100 rounded-xl hover:bg-orange-50 shadow-sm transition-all">
                 <span
-                  className="font-medium text-red-500"
+                  className="font-medium text-red-700"
                   onClick={clearFilters}
                 >
                   Clear Filters
@@ -335,7 +335,7 @@ const PgDetails = () => {
                       {Object.keys(filteredData[0] || {}).map((key, idx) => (
                         <td
                           key={idx}
-                          className={`px-2 py-3 text-[15px] align-top whitespace-nowrap ${
+                          className={`px-2 py-2 text-[15px] align-top whitespace-nowrap ${
                             idx === 0
                               ? "sticky left-0 font-medium bg-orange-200"
                               : idx === 1
