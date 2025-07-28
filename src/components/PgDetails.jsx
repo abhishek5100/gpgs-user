@@ -184,8 +184,8 @@ const PgDetails = () => {
   const filterButtons = [
     { id: "gender", icon: <FaUsers />, label: "Gender" },
     { id: "location", icon: <FaMapMarkerAlt />, label: "Location" },
-    { id: "ac", icon: <FaSnowflake />, label: "AC" },
-    { id: "sharing", icon: <FaHome />, label: "Sharing" },
+    { id: "ac", icon: <FaSnowflake />, label: "Ac / Non AC" },
+    { id: "sharing", icon: <FaHome />, label: "Sharing Type" },
     { id: "bathroom", icon: <FaBath />, label: "Attached Bathroom" },
   ];
 
@@ -197,10 +197,10 @@ const PgDetails = () => {
     );
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 font-sans">
-      <div className="sticky top-0 z-50 bg-gray-100">
-        <div className="relative flex items-center justify-center mb-4">
-          <div className="absolute top-2 left-0 w-[250px]">
+    <div className="min-h-screen bg-orange-100  font-sans">
+      <div className="sticky top-0 z-50   bg-orange-100">
+        <div className="relative flex items-center justify-center ">
+          <div className="absolute top-2 p-2 left-0 w-[250px]">
             <img
               src="https://gpgs.in/wp-content/themes/paying_guest/images/logo.png"
               alt="Logo"
@@ -209,10 +209,9 @@ const PgDetails = () => {
         </div>
 
         {showContent && (
-          <div className="grid grid-cols-2 sm:flex sm:flex-wrap justify-center gap-4">
+          <div className="grid grid-cols-2 mt-5 sm:flex sm:flex-wrap justify-center gap-2">
             {filterButtons.map((btn) => {
               let selectedOptions = [];
-
               if (btn.id === "gender" && genderFilter) {
                 selectedOptions = [genderFilter];
               } else {
@@ -250,18 +249,7 @@ const PgDetails = () => {
                           className="bg-orange-100 text-orange-700 px-2 py-1 rounded-full flex items-center gap-1"
                         >
                           {opt}
-                          <button
-                            onClick={() => {
-                              if (btn.id === "gender") {
-                                setGenderFilter(null);
-                              } else {
-                                toggleFilter(opt);
-                              }
-                            }}
-                            className="ml-1 font-bold text-xs text-orange-500 hover:text-red-500"
-                          >
-                            ×
-                          </button>
+                     
                         </span>
                       ))}
                     </div>
@@ -342,7 +330,7 @@ const PgDetails = () => {
                   {filteredData.map((item, index) => (
                     <tr
                       key={index}
-                      className="even:bg-orange-50 hover:bg-orange-100 transition-all border-b border-gray-200"
+                      className="even:bg-orange-50 hover:bg-orange-200 transition-all border-b border-gray-200"
                     >
                       {Object.keys(filteredData[0] || {}).map((key, idx) => (
                         <td
