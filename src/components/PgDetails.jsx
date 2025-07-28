@@ -197,8 +197,8 @@ const PgDetails = () => {
     );
 
   return (
-    <div className="min-h-screen bg-orange-100  font-sans">
-      <div className="sticky top-0 z-50   bg-orange-100">
+    <div className="min-h-screen bg-white  font-sans">
+      <div className="sticky top-0 z-50   bg-white">
         <div className="relative flex items-center justify-center ">
           <div className="absolute top-2 p-2 left-0 w-[250px]">
             <img
@@ -308,16 +308,16 @@ const PgDetails = () => {
             )}
             <div className="overflow-auto max-h-screen rounded-xl border border-gray-200">
               <table className="min-w-[1000px] w-full text-sm text-left text-gray-700">
-                <thead className="sticky top-0 bg-orange-300 z-10 shadow-md text-gray-800 text-base">
+                <thead className="sticky top-0 bg-orange-200 z-10 shadow-md text-gray-800 text-base">
                   <tr>
                     {Object.keys(filteredData[0] || {}).map((key, idx) => (
                       <th
                         key={key}
                         className={`px-2 py-2 border-b border-gray-300 whitespace-nowrap font-medium ${
                           idx === 0
-                            ? "sticky left-0 z-20 bg-orange-300"
+                            ? "sticky left-0 z-20 bg-orange-200"
                             : idx === 1
-                            ? "sticky left-[30px] z-20 bg-orange-300"
+                            ? "sticky left-[30px] z-20 bg-orange-200 "
                             : ""
                         }`}
                       >
@@ -337,9 +337,9 @@ const PgDetails = () => {
                           key={idx}
                           className={`px-2 py-3 text-[15px] align-top whitespace-nowrap ${
                             idx === 0
-                              ? "sticky left-0 bg-orange-300"
+                              ? "sticky left-0 font-medium bg-orange-200"
                               : idx === 1
-                              ? "sticky left-[30px] bg-orange-300"
+                              ? "sticky left-[30px] font-medium bg-orange-200"
                               : ""
                           }`}
                           // style={{ minWidth: "100px" }}
