@@ -42,7 +42,7 @@ const PgDetails = () => {
 
           setDynamicFilters({
             location: extractUnique("Location"),
-            ac: extractUnique("Ac / Non AC"),
+            ac: extractUnique("AC / Non AC"),
             sharing: extractUnique("Sharing Type"),
             bathroom: extractUnique("Attached Bathroom"),
           });
@@ -69,7 +69,7 @@ const PgDetails = () => {
   };
 
   const FILTER_FIELDS = {};
-  dynamicFilters.ac.forEach((val) => (FILTER_FIELDS[val] = { key: "Ac / Non AC", value: val }));
+  dynamicFilters.ac.forEach((val) => (FILTER_FIELDS[val] = { key: "AC / Non AC", value: val }));
   dynamicFilters.sharing.forEach((val) => (FILTER_FIELDS[val] = { key: "Sharing Type", value: val }));
   dynamicFilters.location.forEach((val) => (FILTER_FIELDS[val] = { key: "Location", value: val }));
   dynamicFilters.bathroom.forEach((val) => (FILTER_FIELDS[val] = { key: "Attached Bathroom", value: val }));
@@ -184,7 +184,7 @@ const PgDetails = () => {
   const filterButtons = [
     { id: "gender", icon: <FaUsers />, label: "Gender" },
     { id: "location", icon: <FaMapMarkerAlt />, label: "Location" },
-    { id: "ac", icon: <FaSnowflake />, label: "Ac / Non AC" },
+    { id: "ac", icon: <FaSnowflake />, label: "AC / Non AC" },
     { id: "sharing", icon: <FaHome />, label: "Sharing Type" },
     { id: "bathroom", icon: <FaBath />, label: "Attached Bathroom" },
   ];
@@ -282,8 +282,8 @@ const PgDetails = () => {
                   }`}
                 />
               </button>
-              <label className="text-sm  text-orange-600">
-                Sort by CVD
+              <label className="text-lg font-medium  text-orange-600">
+                Sort By CVD
               </label>
             </div>
           </div>
