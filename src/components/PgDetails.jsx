@@ -261,20 +261,7 @@ const PgDetails = () => {
             })}
 
 
-            {activeFilters.length > 0 && (
-              <button className="flex items-center bg-orange-100 justify-between h-8 sm:justify-center gap-2 px-4 py-1 border border-orange-500 text-orange-600  rounded-xl hover:bg-orange-50 shadow-sm transition-all">
-                {/* {btn.icon} */}
-                <span onClick={clearFilters}
-                  className="font-medium flex items-center gap-2 ">
-                  <AiOutlineClear /> Clear Filters
-                  {/* {btn.label} */}
-
-
-                </span>
-              </button>
-
-            )}
-
+          
 
 
 
